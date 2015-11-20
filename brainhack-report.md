@@ -59,10 +59,6 @@ affiliations:
   country: Germany
 
 
-
-
-
-
 url: https://github.com/carolFrohlich/brain-orchestra
 
 coi: None
@@ -79,14 +75,13 @@ gigascience-ref: REFXXX
 #Introduction
 Resting-state fMRI (rsfMRI) data generates interesting time courses with unpredictable hills and valleys. This data in some degree resembles the notes of a music scale. 
 Taking advantage of those similarities, we apply the basic rules of music theory for preprocessing rsfMRI and generate pleasant music for humans, using only the rsfMRI data as input.
-Our project used only Python code and the midiutil music library \textit{(https://code.google.com/p/midiutil/)} .
+Our project used only Python code and the midiutil music library \textit{(https://code.google.com/p/midiutil/)}.
 
 #Approach
 \textit{Data}: We used resting-state fMRI data from the ABIDE dataset \cite{di2014autism} that was openly available and preprocessed by the Preprocessed Connectomes Project \cite{pcp}.
 We randomly chose 10 subjects that were preprocessed using C-PAC pipeline \cite{Craddock2013c}.
 Because there is no golden standard for preprocessing fMRI and C-PAC has 4 preprocessing strategies available, we used data preprocessed with all strategies for comparison purposes.
-For reducing the data dimensionality, we chose the CC200 atlas \cite{cc200} , which divides the brain into 200 functional regions.
-Thus, for each file, we had a matrix of the size TR x 200 regions. 
+For reducing the data dimensionality, we chose the CC200 atlas \cite{cc200}, which divides the brain into 200 functional regions.
 
 \textit{Processing}
 We extracted from the data 3 important attributes for generating music: pitch, tempo and volume.
@@ -94,21 +89,19 @@ For the pitches, we pretend using a piano with keys from 21 to 108. Because we k
 But instead of playing all keys, we choose only the ones that are in a certain scale.
 This is done first by calculating the tone of the brain, which is always a number between 36 and 84:
 $(global signal \% 49) + 36$. 
-
 Second, we calculate the smallest key we can play with the tone: $(tone \% 12) + 36$
 Third, we calculate all keys we can play from the smallest key using a scale.
-Finally, we scale each time course in the matrix from the smallest to the biggest key we can play on the piano.
-Even though all keys will be within the range, some will not be in the allowed key set. In this case, we shift them to the closest allowed key.
-In this sense, we build up the pitches in a way most notes sound good together and also maintain the shape of the functional data. An example of allowed set of keys is shown in Figure \ref{figure}.
+Finally, we scale each time course from the smallest to the biggest key we can play on the piano.
+Some keys will not be in the allowed key set. Then, we shift them to the closest allowed key.
+An example of allowed set of keys is shown in Figure \ref{figure}.
 
 
-When calculating the tempo, the simplest method we can do is to play each note for the same time as the TR.In our case, 2 seconds. 
+The simplest method for creating the tempo is to play each note for the same time as the TR. In our case, 2 seconds. 
 In spite of this method being true to the data, it generates boring music.
 For addressing this problem, we use a temporal derivative for calculating the tempo, assuming we have 4 tempos (whole, half, quarter and eighth note).
 In the time course, if the modulus distance between time point \textit{t}  and \textit{t + 1}  is big, we interpret it as a fast note, or an eighth note. 
 However, if the distance between \textit{t} and \textit{t + 1} is close to zero, we assume it is a slow note, or a whole note.
 Using this approach, we map all the other notes in between. 
-In this way, we have some variability in the tempo, making the music less boring, but still being true to the data.
 
 
 The third music component is the volume.
@@ -116,7 +109,6 @@ We use a naive approach for calculating it, in a way that tackles some problems 
 they sound cut off because they play too fast.
 An easy way for solving that is decreasing the volume for fast notes.
 Thus, the faster the note, the lower the note’s volume is. While a whole note has volume 100 (from 0 to 100), an eighth note has volume 50.
-In conclusion, this easy approach gives some variability to the music and also makes all the notes sounds good.
 
 Finally, we choose the brain regions that will play.
 Because we do not want to play all the 200 regions at the same time, we use FastICA \cite{scikitlearn} for choosing some distinct brain regions. 
