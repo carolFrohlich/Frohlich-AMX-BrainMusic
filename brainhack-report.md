@@ -7,14 +7,14 @@ author:
 
 - initials: CF
   surname: Froehlich
-  firstname: C
+  firstname: Caroline
   email: cfrohlich@nki.rfmh.org
   affiliation: aff1
   corref: aff1
 - initials: GD
   surname: Dekel
   firstname: Gil
-  email: gil.dekel85@gmail.com
+  email: gil.dekel47@myhunter.cuny.edu
   affiliation: aff3
 - initials: DM
   surname: Margulies
@@ -66,7 +66,7 @@ coi: None
 
 acknow: The authors would like to thank the organizers and attendees of Brainhack MX.
 
-contrib: RCC and DJC wrote the software, DJC performed tests, and DJC and RCC wrote the report.
+contrib: GD (domain expert) data transformation functions and scale production algorithms, RCC and DJC wrote the software, DJC performed tests, and DJC and RCC wrote the report.
   
 bibliography: brainhack-report
 
@@ -75,7 +75,7 @@ gigascience-ref: REFXXX
 
 #Introduction
 Resting-state fMRI (rsfMRI) data generates interesting time courses with unpredictable hills and valleys. This data in some degree resembles the notes of a music scale. 
-Taking advantage of those similarities, we apply the basic rules of music theory to preprocessed rsfMRI and generate pleasant music for humans, using only the rsfMRI data as input.
+Taking advantage of these similarities and using only the rsfMRI data as input, we use basic rules of music theory to transform the data into pleasant music.
 Our project is implemented in Python using the [midiutil library](https://code.google.com/p/midiutil/)
 
 #Approach
@@ -84,21 +84,21 @@ We randomly chose 10 subjects that were preprocessed using C-PAC pipeline \cite{
 Because there is no golden standard for preprocessing fMRI and C-PAC has 4 preprocessing strategies available, we used data preprocessed with all strategies for comparison purposes.
 For reducing the data dimensionality, we chose the CC200 atlas \cite{cc200}, which divides the brain into 200 functional regions.
 
-\textit{Processing:} fMRI time courses were analysed to extract pitch, music, and tempo - 3 important attributes for generating music. For pitch, we mapped the time course amplitudes to MIDI values in the range of 36 to 84 that correspond to piano keys in the pentatonic scale. The tone is determined from the global mean ROI value (calculated across all timepoints and all ROIs) using the equation: \texttt{(global signal \% 49) + 36}. The smallest key that can be played in the tone is calculated from \texttt{(tone \% 12) + 36}. The set of keys that can be played are then determined from the smalles key using a scale. For the minor pentatonic scale the set of keys would be calculated by adding \texttt{[0, 3, 5, 7, 10]}, skipping to the next pitch by adding 12 to the lowest key in the pitch, and then adding these 5 numbers again, until the value 84 is reached.  An fMRI time course is mapped to these possible keys by scaling its amplitude to the range between the smallest and largest keys in the set. If a time point maps to a key that is not in the set, it is shifted to the closest allowable key.
-An example of allowed set of keys is shown in Figure \ref{keyfig}.
+\textit{Processing:} fMRI time courses were analysed to extract pitch, tempo, and volume - 3 important attributes for generating music. For pitch, we mapped the time course amplitudes to MIDI values in the range of 36 to 84 that correspond to piano keys in within a pentatonic scale. The key of the scale is determined by the global mean ROI value (calculated across all timepoints and all ROIs) using the equation: \texttt{(global signal \% 49) + 36}. The lowest tone that can be played in a certain key is calculated from \texttt{(key \% 12) + 36}. The set of tones that can be played are then determined from the lowest tone using a scale. For example, the minor-pentatonic scale's set of tones is calculated by adding \texttt{[0, 3, 5, 7, 10]} to its lowest tone, then skipping to the next octave by adding 12 to the lowest tone, and then repeating the process until the value 84 is reached. An fMRI time course is mapped to these possible tones by scaling its amplitude to the range between the smallest and largest tones in the set. If a time point maps to a tone that is not in the set, it is shifted to the closest allowable tone.
+An example of allowed set of tones is shown in Figure \ref{keyfig}.
 
-The simplest method for creating the tempo is to play each note for the same time as the TR, in our case, 2 seconds. In spite of this method being true to the data, it generates boring music. To address this problem, we use the first temporal derivative for calculating the length of notes, assuming we have 4 lengths (whole, half, quarter and eighth note). In the time course, if the modulus distance between time point \textit{t}  and \textit{t + 1}  is big, we interpret it as a fast note, or an eighth note. However, if the distance between \textit{t} and \textit{t + 1} is close to zero, we assume it is a slow note, or a whole note. Using this approach, we map all the other notes in between. 
+The simplest method for creating the tempo is to play each note for the same time as the TR, in our case, 2 seconds. In spite of this method being true to the data, it generates monotonous music. To address this problem, we use the first temporal derivative for calculating the length of notes, assuming we have 4 lengths (whole, half, quarter and eighth note). In the time course, if the modulus distance between time point \textit{t}  and \textit{t + 1}  is big, we interpret it as a fast note, or an eighth note. However, if the distance between \textit{t} and \textit{t + 1} is close to zero, we assume it is a slow note, or a whole note. Using this approach, we map all the other notes in between. 
 
-We use a naive approach for calculating volume, in a way that tackles some problems we have with fast notes: they sound cut off because they play too fast. An easy way for solving this problem is decreasing the volume for fast notes. Thus, the faster the note, the lower the note’s volume is. While a whole note has volume 100 (from 0 to 100), an eighth note has volume 50.
+We use a naive approach for calculating volume in a way that tackles a problem we have with fast notes: their sound is cut off too fast due to their short duration. An simple way to solve this problem is to decrease the volume of fast notes. Thus, the faster the note, the lower the volume. While a whole note has volume 100 ([0,100]), an eighth note has volume 50.
 
-Finally, we choose the brain regions that will play. Because we do not want to play all the 200 regions at the same time, we use FastICA \cite{scikitlearn} for choosing brain regions with maximally uncorrelated time courses. Users complain when two very similar brain regions play together, it seems like the brain is playing the same music twice. But when the regions are distinct, the music is pleasant.
+Finally, we choose the brain regions that will play. Because we do not want to play all the 200 regions at the same time, we use FastICA \cite{scikitlearn} for choosing brain regions with maximally uncorrelated time courses. Users complain when two similar brain regions play together. Apparently, the brain produces the same music twice. However, when the regions are distinct, the music is pleasant.
 
 #Results
-A concrete framework for generating music from fMRI data, based on real music theory, was developed and implemented as a Python tool, and used to generate several example audio files. Listeners have reported that the music is pleasant and has most of the characteristics that are considered good by music theory, specifically a nice rhythm. The implementation gave us some flexibility for experimenting with different instruments, scales, and tempos. When listening to the results, we noticed that the music across subjects are different, but the music generated by the same subject using the 4 different strategies sounded very similar.  These results sound very different from music obtained in a similar study using EEG and fMRI data \cite{lu2012scale}. Some of the drawbacks are that because we just followed some basic music theory formulas, it sounds naive for people with some training, and because we used the default instruments from the midi library, we ended up with very different results depending on the instruments we chose to play. 
+A concrete framework for generating music from fMRI data, based on real music theory, was developed and implemented as a Python tool and used to generate several example audio files. Listeners have reported that the examples present musical characteristics, and that melodies are pleasant (more specifically, nice rhythm.) The implementation allows for experimenting with different instruments, scales, and tempos. When listening to the results, we noticed that music across subjects is different. However, music generated by the same subject (using the four different preprocessing strategies) sounds quite similar. Our results sound very different from music obtained in a similar study using EEG and fMRI data \cite{lu2012scale}. Some of the drawbacks are (a) because we followed basic music theory formulas, the resulting music sounds naïve for people with some musical training, and (b) because we used default midi library instruments, we ended up with widely different results depending on the instruments we chose to play. 
 
 
 # Conclusions
-In this experiment, we established a way of generating music with open fMRI data following some basic music theory principles. This resulted in a somewhat naive music that sounded pleasant for humans, which is very different from the result in a similar experiment \cite{lu2012scale}. The results show an interesting possibility for providing feedback of fMRI activity for neurofeedback experiments.
+In this experiment, we established a way of generating music with open fMRI data following some basic music theory principles. This resulted in a somewhat naïve but pleasant music for human consumption, which is different from the result in a similar experiment \cite{lu2012scale}. The results show an interesting possibility for providing feedback of fMRI activity for neurofeedback experiments.
 
 
 \begin{figure}
@@ -107,8 +107,8 @@ In this experiment, we established a way of generating music with open fMRI data
   (a)Correspondence between the original time series of one ROI and the generated pitch.
   (b)The first 10 notes of the same ROI as sheet music.
   (c)All possible piano keys the brain can play, from 36 to 84 (in pink).
-    We show in red an example of allowed keys when the tone is 36 and we use the minor pentatonic scale.
-    In that case, the smallest key is 36.
-    The keys that can be pressed from 36 are: [36, 39, 41, 42, 43, 46, 48, 51, 53, 54, 55, 58, 60, 63, 65, 66, 67, 70, 72, 75, 77, 78, 79, 82, 84]
+    We show in red all the possible tones for a C Minor-pentatonic scale, in the range of [36, 84].
+    In that case, the lowest key is 36.
+    The keys that can be used are: [36, 39, 41, 42, 43, 46, 48, 51, 53, 54, 55, 58, 60, 63, 65, 66, 67, 70, 72, 75, 77, 78, 79, 82, 84]
       }
 \end{figure}
