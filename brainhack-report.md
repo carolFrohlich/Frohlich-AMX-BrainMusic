@@ -16,9 +16,9 @@ author:
   firstname: Gil
   email: gil.dekel47@myhunter.cuny.edu
   affiliation: aff3
-- initials: DM
+- initials: DSM
   surname: Margulies
-  firstname: Daniel
+  firstname: Daniel S.
   email: margulies@cbs.mpg.de
   affiliation: aff4
 - initials: RCC
@@ -52,7 +52,7 @@ affiliations:
   state: New York
   country: USA
 - id: aff4
-  orgname: 'Research Group for Neuroanatomy & Connectivity, Max Planck Institute for Human Cognitive and Brain Sciences'
+  orgname: 'Max Planck Research Group for Neuroanatomy & Connectivity, Max Planck Institute for Human Cognitive and Brain Sciences'
   street: Stephanstraße 1A
   postcode: 04103
   city: Leipzig
@@ -66,11 +66,9 @@ coi: None
 
 acknow: The authors would like to thank the organizers and attendees of Brainhack MX.
 
-contrib: 
-CF wrote the software. GD designed the functions for transforming the data to midi.
-DM  pick the algorithm that chooses ROIs, and CF and RCC wrote the report.
+contrib: CF wrote the software. GD designed the functions for transforming the data to midi. DSM pick the algorithm that chooses ROIs, and CF and RCC wrote the report.
   
-bibliography: brainhack-report
+bibliography: ./brainhack-report
 
 gigascience-ref: REFXXX
 ...
