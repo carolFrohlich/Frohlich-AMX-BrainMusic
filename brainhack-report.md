@@ -97,7 +97,7 @@ A framework for generating music from fMRI data, based on music theory, was deve
 
 
 # Conclusions
-In this experiment, we established a way of generating music with open fMRI data following some basic music theory principles. This resulted in a somewhat naïve but pleasant music for humans. The results show an interesting possibility for providing feedback of fMRI activity for neurofeedback experiments.
+In this experiment, we established a way of generating music with open fMRI data following some basic music theory principles. This resulted in a somewhat naïve but pleasant musical experience. Our results also demonstrate an interesting possibility for providing feedback from fMRI activity for neurofeedback experiments.
 
 
 \begin{figure}
