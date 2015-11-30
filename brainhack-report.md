@@ -1,7 +1,7 @@
 ---
 event: '2015 Brainhack Americas (MX)'
 
-title:  'Generating music with resting state fMRI data'
+title:  'Generating music with resting-state fMRI data'
 
 author:
 
@@ -74,8 +74,8 @@ gigascience-ref: REFXXX
 ...
 
 #Introduction
-Resting-state fMRI (rsfMRI) data generates interesting time courses with unpredictable hills and valleys. This data in some degree resembles the notes of a music scale. 
-Taking advantage of these similarities and using only the rsfMRI data as input, we use basic rules of music theory to transform the data into pleasant music.
+Resting-state fMRI (rsfMRI) data generates time courses with unpredictable hills and valleys, which to some degree resemble the notes of a musical scale. 
+Taking advantage of these similarities, and using only rsfMRI data as input, we use basic rules of music theory to transform the data into musical form.
 Our project is implemented in Python using the [midiutil library](https://code.google.com/p/midiutil/).
 
 #Approach
